@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 
 import { CoursePlayer } from "@/components/creator/course-player";
 import { LessonBody } from "@/components/creator/lesson-body";
 import { PublicChrome } from "@/components/creator/public-chrome";
+import { Button } from "@/components/ui/button";
 import { CREATOR_SLUG } from "@/lib/creator/model";
 import { getLearnerView } from "@/lib/creator/store";
 import { FleetError, getFleetUser } from "@/lib/fleet/platform/session";
@@ -12,7 +14,7 @@ import { FleetError, getFleetUser } from "@/lib/fleet/platform/session";
 type PageProps = { params: Promise<{ tenantId: string; courseSlug: string }> };
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Learn — SaaSassin Creator", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: "Learn", robots: { index: false, follow: false } };
 
 export default async function LearnPage({ params }: PageProps) {
   const { tenantId, courseSlug } = await params;
@@ -36,7 +38,14 @@ export default async function LearnPage({ params }: PageProps) {
   return (
     <PublicChrome
       schoolName={view.schoolName}
-      right={<><Link className="text-sm underline" href={landing}>Course page</Link><Link className="text-sm underline" href="/apps/creator">My learning</Link></>}
+      tenantId={tenantId}
+      signedIn
+      nextPath={`${landing}/learn`}
+      extra={
+        <Button asChild variant="ghost" size="lg" className="hidden rounded-xl md:inline-flex">
+          <Link href={landing}><ArrowLeft aria-hidden="true" /> Course page</Link>
+        </Button>
+      }
     >
       <CoursePlayer
         tenantId={tenantId}
